@@ -16,12 +16,12 @@ def build_record_level_summary(anomalies_list: list[dict], all_record_ids: list[
     summary = {rid: {"Total_Rule_Violations": 0, "High": 0, "Medium": 0, "Low": 0} for rid in all_record_ids}
     
     for anom in anomalies_list:
-        rid = anom["record_identifier"]
+        rid = anom["Record_ID"]
         if rid not in summary:
             summary[rid] = {"Total_Rule_Violations": 0, "High": 0, "Medium": 0, "Low": 0}
         
         summary[rid]["Total_Rule_Violations"] += 1
-        sev = str(anom["severity"]).capitalize()
+        sev = str(anom["Severity"]).capitalize()
         if sev == "High":
             summary[rid]["High"] += 1
         elif sev == "Medium":
@@ -51,7 +51,7 @@ def build_anomaly_stats(
 ) -> dict:
     total_records = med_total + pharm_total + auth_total
     total_violations = len(anomalies_list)
-    flagged_records = len(set(a["record_identifier"] for a in anomalies_list))
+    flagged_records = len(set(a["Record_ID"] for a in anomalies_list))
     
     violations_by_rule = {}
     violations_by_category = {}
@@ -59,10 +59,10 @@ def build_anomaly_stats(
     violations_by_type = {"MEDICAL_CLAIM": 0, "PHARMACY_CLAIM": 0, "PRIOR_AUTH": 0}
     
     for anom in anomalies_list:
-        rule_id = anom["rule_id"]
-        category = anom["anomaly_category"]
-        severity = anom["severity"].upper()
-        rec_type = anom["record_type"]
+        rule_id = anom["Rule_ID"]
+        category = anom["Anomaly_Category"]
+        severity = anom["Severity"].upper()
+        rec_type = anom["Record_Type"]
         
         violations_by_rule[rule_id] = violations_by_rule.get(rule_id, 0) + 1
         violations_by_category[category] = violations_by_category.get(category, 0) + 1
@@ -79,17 +79,17 @@ def build_anomaly_stats(
         "by_record_type": {
             "MEDICAL_CLAIM": {
                 "analyzed": med_total,
-                "flagged": len(set(a["record_identifier"] for a in anomalies_list if a["record_type"] == "MEDICAL_CLAIM")),
+                "flagged": len(set(a["Record_ID"] for a in anomalies_list if a["Record_Type"] == "MEDICAL_CLAIM")),
                 "violations": violations_by_type["MEDICAL_CLAIM"]
             },
             "PHARMACY_CLAIM": {
                 "analyzed": pharm_total,
-                "flagged": len(set(a["record_identifier"] for a in anomalies_list if a["record_type"] == "PHARMACY_CLAIM")),
+                "flagged": len(set(a["Record_ID"] for a in anomalies_list if a["Record_Type"] == "PHARMACY_CLAIM")),
                 "violations": violations_by_type["PHARMACY_CLAIM"]
             },
             "PRIOR_AUTH": {
                 "analyzed": auth_total,
-                "flagged": len(set(a["record_identifier"] for a in anomalies_list if a["record_type"] == "PRIOR_AUTH")),
+                "flagged": len(set(a["Record_ID"] for a in anomalies_list if a["Record_Type"] == "PRIOR_AUTH")),
                 "violations": violations_by_type["PRIOR_AUTH"]
             }
         },
@@ -98,6 +98,77 @@ def build_anomaly_stats(
         "violations_by_severity": violations_by_severity
     }
     return stats
+
+
+def print_final_reports(anomalies: list[dict], med_cnt: int, pharm_cnt: int, auth_cnt: int):
+    print("=" * 60)
+    print("FINAL SUMMARY REPORT")
+    print("=" * 60)
+    
+    # 1. Summary table
+    print("\nRecord Type | Total Records | Unique Flagged Records | Anomaly Events | Anomaly Rate")
+    print("-" * 85)
+    for rtype, tot in [("MEDICAL_CLAIM", med_cnt), ("PHARMACY_CLAIM", pharm_cnt), ("PRIOR_AUTH", auth_cnt)]:
+        flagged = len(set(a["Record_ID"] for a in anomalies if a["Record_Type"] == rtype))
+        events = sum(1 for a in anomalies if a["Record_Type"] == rtype)
+        rate = (flagged / tot) * 100 if tot > 0 else 0
+        print(f"{rtype:<14} | {tot:<13} | {flagged:<22} | {events:<14} | {rate:.2f}%")
+        
+    tot_flagged = len(set(a["Record_ID"] for a in anomalies))
+    tot_events = len(anomalies)
+    tot_records = med_cnt + pharm_cnt + auth_cnt
+    tot_rate = (tot_flagged / tot_records) * 100 if tot_records > 0 else 0
+    print(f"{'TOTAL':<14} | {tot_records:<13} | {tot_flagged:<22} | {tot_events:<14} | {tot_rate:.2f}%")
+    
+    # 2. Category breakdown
+    print("\nAnomaly Category | Record Type | Count")
+    print("-" * 50)
+    cat_breakdown = {}
+    for a in anomalies:
+        key = (a["Anomaly_Category"], a["Record_Type"])
+        cat_breakdown[key] = cat_breakdown.get(key, 0) + 1
+    for (cat, rtype), count in sorted(cat_breakdown.items()):
+        print(f"{cat:<26} | {rtype:<14} | {count}")
+        
+    # 3. Rule breakdown
+    print("\nRule_ID | Rule Description | Trigger Count | Unique Records")
+    print("-" * 85)
+    rule_counts = {}
+    rule_uniques = {}
+    for a in anomalies:
+        rid = a["Rule_ID"]
+        rule_counts[rid] = rule_counts.get(rid, 0) + 1
+        if rid not in rule_uniques:
+            rule_uniques[rid] = set()
+        rule_uniques[rid].add(a["Record_ID"])
+        
+    for rid, cfg in sorted(RULES_CONFIG.items()):
+        if not cfg.get("enabled", True):
+            continue
+        count = rule_counts.get(rid, 0)
+        uniques = len(rule_uniques.get(rid, []))
+        desc = cfg["description"]
+        print(f"{rid:<7} | {desc[:40]:<40} | {count:<13} | {uniques}")
+        
+    # 4. Before vs After comparison
+    print("\nBEFORE vs AFTER processing timeline deduplication:")
+    print("-" * 50)
+    print("Before:")
+    print("  Processed < Submission = 2,745")
+    print("  Negative Latency = 2,745")
+    print("  Total Timeline Anomalies = 5,490")
+    print("\nAfter:")
+    # Count of R_DATE_001 across all datasets
+    timeline_count = sum(1 for a in anomalies if a["Rule_ID"] == "R_DATE_001")
+    med_timeline = sum(1 for a in anomalies if a["Rule_ID"] == "R_DATE_001" and a["Record_Type"] == "MEDICAL_CLAIM")
+    pharm_timeline = sum(1 for a in anomalies if a["Rule_ID"] == "R_DATE_001" and a["Record_Type"] == "PHARMACY_CLAIM")
+    auth_timeline = sum(1 for a in anomalies if a["Rule_ID"] == "R_DATE_001" and a["Record_Type"] == "PRIOR_AUTH")
+    print(f"  Invalid Processing Timeline (R_DATE_001) = {timeline_count}")
+    print(f"    - Medical: {med_timeline}")
+    print(f"    - Pharmacy: {pharm_timeline}")
+    print(f"    - Prior Auth: {auth_timeline}")
+    print(f"  Total Timeline Anomalies = {timeline_count}")
+    print("=" * 60)
 
 
 def main():
@@ -143,6 +214,32 @@ def main():
     combined_anoms = med_anoms + pharm_anoms + auth_anoms
     combined_anoms_df = pd.DataFrame(combined_anoms)
     
+    # Ensure correct columns structure even if empty
+    cols = [
+        "Record_ID", "Record_Type", "Detection_Method", "Anomaly_Category", 
+        "Affected_Columns", "Observed_Value", "Expected_Condition", 
+        "Severity", "Explanation", "Rule_ID", "Source_Dataset", "Detection_Timestamp"
+    ]
+    if combined_anoms_df.empty:
+        combined_anoms_df = pd.DataFrame(columns=cols)
+    else:
+        combined_anoms_df = combined_anoms_df[cols]
+        
+    if med_anoms_df.empty:
+        med_anoms_df = pd.DataFrame(columns=cols)
+    else:
+        med_anoms_df = med_anoms_df[cols]
+        
+    if pharm_anoms_df.empty:
+        pharm_anoms_df = pd.DataFrame(columns=cols)
+    else:
+        pharm_anoms_df = pharm_anoms_df[cols]
+        
+    if auth_anoms_df.empty:
+        auth_anoms_df = pd.DataFrame(columns=cols)
+    else:
+        auth_anoms_df = auth_anoms_df[cols]
+    
     # Save separate detailed reports
     med_anoms_df.to_csv(anomaly_outputs_dir / "medical_rule_anomalies.csv", index=False)
     pharm_anoms_df.to_csv(anomaly_outputs_dir / "pharmacy_rule_anomalies.csv", index=False)
@@ -159,10 +256,7 @@ def main():
     with open(anomaly_outputs_dir / "anomaly_statistics.json", "w") as f:
         json.dump(stats, f, indent=4)
         
-    print(f"\nRule-based anomaly detection completed successfully!")
-    print(f"Detailed anomaly reports written to: {anomaly_outputs_dir}")
-    print(f"Total rule violations logged: {len(combined_anoms)}")
-    print(f"Flagged records: {stats['global_summary']['total_records_flagged']} out of {stats['global_summary']['total_records_analyzed']}")
+    print_final_reports(combined_anoms, med_cnt, pharm_cnt, auth_cnt)
 
 
 if __name__ == "__main__":

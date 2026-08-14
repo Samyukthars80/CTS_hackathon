@@ -40,104 +40,111 @@ def evaluate_authorization_rules(df: pd.DataFrame, config: dict) -> list[dict]:
                 source_dataset=source
             ))
 
-    # AUTH-M001: Negative Retry Count
+    # R_TECH_001: Negative Retry Count
     if "Retry_Count" in df.columns:
         mask = df["Retry_Count"] < 0
         add_anomalies_from_mask(
-            mask, "AUTH-M001", "Retry_Count",
+            mask, "R_TECH_001", "Retry_Count",
             lambda r: f"Retry_Count = {r['Retry_Count']}",
             "Retry_Count >= 0",
             lambda r: f"Retry count ({r['Retry_Count']}) is negative."
         )
 
-    # AUTH-M002: Negative Latency
-    if "Processing_Latency_Days" in df.columns:
-        mask = df["Processing_Latency_Days"] < 0
-        add_anomalies_from_mask(
-            mask, "AUTH-M002", "Processing_Latency_Days",
-            lambda r: f"Processing_Latency_Days = {r['Processing_Latency_Days']}",
-            "Processing_Latency_Days >= 0",
-            lambda r: f"Processing latency ({r['Processing_Latency_Days']} days) is negative."
-        )
-
-    # AUTH-M003: Invalid SLA Target
+    # R_TECH_002: SLA target days must not be negative
     if "SLA_Target_Days" in df.columns:
         mask = df["SLA_Target_Days"] < 0
         add_anomalies_from_mask(
-            mask, "AUTH-M003", "SLA_Target_Days",
+            mask, "R_TECH_002", "SLA_Target_Days",
             lambda r: f"SLA_Target_Days = {r['SLA_Target_Days']}",
             "SLA_Target_Days >= 0",
             lambda r: f"SLA target days ({r['SLA_Target_Days']}) is negative."
         )
 
-    # AUTH-M004: Processed before Submission
-    if "Processed_Date" in df.columns and "Submission_Date" in df.columns:
-        mask = df["Processed_Date"].notna() & df["Submission_Date"].notna() & (df["Processed_Date"] < df["Submission_Date"])
-        add_anomalies_from_mask(
-            mask, "AUTH-M004", "Processed_Date, Submission_Date",
-            lambda r: f"Processed = {r['Processed_Date'].strftime('%Y-%m-%d')}, Submission = {r['Submission_Date'].strftime('%Y-%m-%d')}",
-            "Processed_Date >= Submission_Date",
-            lambda r: f"Authorization processed date ({r['Processed_Date'].strftime('%Y-%m-%d')}) occurs before the submission date ({r['Submission_Date'].strftime('%Y-%m-%d')})."
-        )
+    # R_DATE_001: Invalid Processing Timeline (Deduplicated)
+    # Check if processed before submission OR latency is negative
+    mask_date_order = df["Processed_Date"].notna() & df["Submission_Date"].notna() & (df["Processed_Date"] < df["Submission_Date"])
+    mask_latency = df["Processing_Latency_Days"].notna() & (df["Processing_Latency_Days"] < 0)
+    mask_timeline = mask_date_order | mask_latency
+    
+    def observed_timeline(row):
+        obs = []
+        if row["Processed_Date"] < row["Submission_Date"]:
+            obs.append(f"Processed = {row['Processed_Date'].strftime('%Y-%m-%d')}, Submission = {row['Submission_Date'].strftime('%Y-%m-%d')}")
+        if row["Processing_Latency_Days"] < 0:
+            obs.append(f"Latency = {row['Processing_Latency_Days']}")
+        return "; ".join(obs)
+        
+    def explanation_timeline(row):
+        exp = []
+        if row["Processed_Date"] < row["Submission_Date"]:
+            exp.append(f"Authorization processed date ({row['Processed_Date'].strftime('%Y-%m-%d')}) is before submission date ({row['Submission_Date'].strftime('%Y-%m-%d')})")
+        if row["Processing_Latency_Days"] < 0:
+            exp.append(f"Processing latency is negative ({row['Processing_Latency_Days']} days)")
+        return ". ".join(exp) + ". This indicates an invalid processing timeline."
 
-    # AUTH-M005: Decision before Submission
+    add_anomalies_from_mask(
+        mask_timeline, "R_DATE_001", "Submission_Date, Processed_Date, Processing_Latency_Days",
+        observed_timeline,
+        "Processed_Date >= Submission_Date AND Processing_Latency_Days >= 0",
+        explanation_timeline
+    )
+
+    # R_DATE_004: Decision before Submission
     if "Decision_Date" in df.columns and "Submission_Date" in df.columns:
         mask = df["Decision_Date"].notna() & df["Submission_Date"].notna() & (df["Decision_Date"] < df["Submission_Date"])
         add_anomalies_from_mask(
-            mask, "AUTH-M005", "Decision_Date, Submission_Date",
+            mask, "R_DATE_004", "Decision_Date, Submission_Date",
             lambda r: f"Decision = {r['Decision_Date'].strftime('%Y-%m-%d')}, Submission = {r['Submission_Date'].strftime('%Y-%m-%d')}",
             "Decision_Date >= Submission_Date",
             lambda r: f"Decision date ({r['Decision_Date'].strftime('%Y-%m-%d')}) occurs before the submission date ({r['Submission_Date'].strftime('%Y-%m-%d')})."
         )
 
-    # AUTH-M006: Decision before Processing
+    # R_DATE_005: Decision before Processing
     if "Decision_Date" in df.columns and "Processed_Date" in df.columns:
         mask = df["Decision_Date"].notna() & df["Processed_Date"].notna() & (df["Decision_Date"] < df["Processed_Date"])
         add_anomalies_from_mask(
-            mask, "AUTH-M006", "Decision_Date, Processed_Date",
+            mask, "R_DATE_005", "Decision_Date, Processed_Date",
             lambda r: f"Decision = {r['Decision_Date'].strftime('%Y-%m-%d')}, Processed = {r['Processed_Date'].strftime('%Y-%m-%d')}",
             "Decision_Date >= Processed_Date",
-            lambda r: f"Decision date ({r['Decision_Date'].strftime('%Y-%m-%d')}) is before the processed date ({r['Processed_Date'].strftime('%Y-%m-%d')})."
+            lambda r: f"Decision date ({r['Decision_Date'].strftime('%Y-%m-%d')}) occurs before the processed date ({r['Processed_Date'].strftime('%Y-%m-%d')})."
         )
 
-    # AUTH-M007: SLA Breach
+    # R_SLA_001: SLA Breach
     if "Processing_Latency_Days" in df.columns and "SLA_Target_Days" in df.columns:
         mask = df["Processing_Latency_Days"].notna() & df["SLA_Target_Days"].notna() & (df["Processing_Latency_Days"] > df["SLA_Target_Days"])
         add_anomalies_from_mask(
-            mask, "AUTH-M007", "Processing_Latency_Days, SLA_Target_Days",
+            mask, "R_SLA_001", "Processing_Latency_Days, SLA_Target_Days",
             lambda r: f"Latency = {r['Processing_Latency_Days']}, SLA_Target = {r['SLA_Target_Days']}",
             "Processing_Latency_Days <= SLA_Target_Days",
             lambda r: f"Processing latency ({r['Processing_Latency_Days']} days) exceeded the authorization SLA target days ({r['SLA_Target_Days']} days)."
         )
 
-    # AUTH-M008: Status/Decision Consistency
+    # R_CAT_001: Invalid Status
+    if "Status" in df.columns:
+        mask = ~df["Status"].isin(["APPROVED", "DENIED", "PENDING"])
+        add_anomalies_from_mask(
+            mask, "R_CAT_001", "Status",
+            lambda r: f"Status = {r['Status']}",
+            "Status in ['APPROVED', 'DENIED', 'PENDING']",
+            lambda r: f"Authorization status ({r['Status']}) contains an unexpected code not conforming to standard statuses (APPROVED, DENIED, PENDING)."
+        )
+
+    # R_CAT_002: Status/Decision Consistency
     if "Status" in df.columns and "Decision_Date" in df.columns:
-        # PENDING claims must not have Decision_Date
         mask1 = (df["Status"] == "PENDING") & df["Decision_Date"].notna()
         add_anomalies_from_mask(
-            mask1, "AUTH-M008", "Status, Decision_Date",
+            mask1, "R_CAT_002", "Status, Decision_Date",
             lambda r: f"Status = PENDING, Decision_Date = {r['Decision_Date'].strftime('%Y-%m-%d')}",
             "Decision_Date must be missing for PENDING status",
             lambda r: f"Authorization has status PENDING but contains a populated decision date ({r['Decision_Date'].strftime('%Y-%m-%d')})."
         )
         
-        # APPROVED or DENIED claims must have Decision_Date
         mask2 = df["Status"].isin(["APPROVED", "DENIED"]) & df["Decision_Date"].isna()
         add_anomalies_from_mask(
-            mask2, "AUTH-M008", "Status, Decision_Date",
+            mask2, "R_CAT_002", "Status, Decision_Date",
             lambda r: f"Status = {r['Status']}, Decision_Date = NaN",
             "Decision_Date must be present for completed status",
             lambda r: f"Authorization status is {r['Status']} but its required decision date is missing (NaN)."
-        )
-
-    # AUTH-M009: Missing Auth Linkage (Disabled in config by default, but implemented here for completeness)
-    if "Auth_Linked_ID" in df.columns:
-        mask = df["Auth_Linked_ID"].isna()
-        add_anomalies_from_mask(
-            mask, "AUTH-M009", "Auth_Linked_ID",
-            lambda r: "Auth_Linked_ID = NaN",
-            "Auth_Linked_ID must be present",
-            lambda r: "Prior Authorization is missing the required linkage identifier."
         )
 
     return anomalies

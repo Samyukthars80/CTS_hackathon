@@ -18,35 +18,41 @@ def test_medical_rules():
         "SLA_Breach_Flag": "N", "BENE_ID": "B1", "Provider_NPI": "1234567890"
     }
     
-    # 2. Negative Billed (MED-M001)
+    # 2. Negative Billed (R_FIN_001)
     r_neg_billed = r_valid.copy()
     r_neg_billed.update({"Record_ID": "MC_NEG_BILLED", "Billed_Amount": -10.0})
     
-    # 3. Paid > Allowed (MED-M005)
+    # 3. Paid > Allowed (R_FIN_005)
     r_paid_gt_allow = r_valid.copy()
     r_paid_gt_allow.update({"Record_ID": "MC_PAID_GT_ALLOW", "Paid_Amount": 90.0, "Allowed_Amount": 80.0})
     
-    # 4. Allowed > Billed (MED-M006)
+    # 4. Allowed > Billed (R_FIN_006)
     r_allow_gt_bill = r_valid.copy()
     r_allow_gt_bill.update({"Record_ID": "MC_ALLOW_GT_BILL", "Allowed_Amount": 120.0, "Billed_Amount": 100.0})
     
-    # 5. Invalid date sequence: Service_End_Date < Service_Date (MED-M008)
+    # 5. Invalid date sequence: Service_End_Date < Service_Date (R_DATE_002)
     r_inv_date = r_valid.copy()
     r_inv_date.update({"Record_ID": "MC_INV_DATE", "Service_Date": "2025-01-05", "Service_End_Date": "2025-01-01"})
     
-    # 6. Negative latency (MED-M012)
+    # 6. Negative latency (R_DATE_001)
     r_neg_latency = r_valid.copy()
     r_neg_latency.update({"Record_ID": "MC_NEG_LAT", "Processing_Latency_Days": -2.0})
     
-    # 7. Negative retry (MED-M013)
+    # 7. Processed before submission (R_DATE_001)
+    r_proc_before_sub = r_valid.copy()
+    r_proc_before_sub.update({
+        "Record_ID": "MC_PROC_SUB", "Processed_Date": "2025-01-01", "Submission_Date": "2025-01-02", "Processing_Latency_Days": -1.0
+    })
+    
+    # 8. Negative retry (R_TECH_001)
     r_neg_retry = r_valid.copy()
     r_neg_retry.update({"Record_ID": "MC_NEG_RETRY", "Retry_Count": -1})
     
-    # 8. SLA breach (MED-M014)
+    # 9. SLA breach (R_SLA_001)
     r_sla_breach = r_valid.copy()
     r_sla_breach.update({"Record_ID": "MC_SLA", "Processing_Latency_Days": 35.0, "SLA_Target_Days": 30.0})
     
-    # 9. Pending claim without Processed_Date (Valid, should not breach SLA or trigger date mismatch)
+    # 10. Pending claim without Processed_Date (Valid, should not breach SLA or trigger date mismatch)
     r_pending = r_valid.copy()
     r_pending.update({
         "Record_ID": "MC_PENDING", "Status": "PENDING", "Processed_Date": None, "Processing_Latency_Days": None
@@ -54,12 +60,12 @@ def test_medical_rules():
     
     df = pd.DataFrame([
         r_valid, r_neg_billed, r_paid_gt_allow, r_allow_gt_bill,
-        r_inv_date, r_neg_latency, r_neg_retry, r_sla_breach, r_pending
+        r_inv_date, r_neg_latency, r_proc_before_sub, r_neg_retry, r_sla_breach, r_pending
     ])
     
     anoms = evaluate_medical_rules(df, RULES_CONFIG)
-    anom_ids = [a["record_identifier"] for a in anoms]
-    rules_triggered = [a["rule_id"] for a in anoms]
+    anom_ids = [a["Record_ID"] for a in anoms]
+    rules_triggered = [a["Rule_ID"] for a in anoms]
     
     print(f"Triggered anomaly IDs: {anom_ids}")
     print(f"Triggered rule IDs: {rules_triggered}")
@@ -69,25 +75,31 @@ def test_medical_rules():
     assert "MC_PENDING" not in anom_ids, "Error: Valid pending record was flagged!"
     
     assert "MC_NEG_BILLED" in anom_ids
-    assert "MED-M001" in rules_triggered
+    assert "R_FIN_001" in rules_triggered
     
     assert "MC_PAID_GT_ALLOW" in anom_ids
-    assert "MED-M005" in rules_triggered
+    assert "R_FIN_005" in rules_triggered
     
     assert "MC_ALLOW_GT_BILL" in anom_ids
-    assert "MED-M006" in rules_triggered
+    assert "R_FIN_006" in rules_triggered
     
     assert "MC_INV_DATE" in anom_ids
-    assert "MED-M008" in rules_triggered
+    assert "R_DATE_002" in rules_triggered
     
+    # Negative latency must be R_DATE_001
     assert "MC_NEG_LAT" in anom_ids
-    assert "MED-M012" in rules_triggered
+    assert "MC_PROC_SUB" in anom_ids
+    assert "R_DATE_001" in rules_triggered
+    
+    # Verify deduplication for MC_PROC_SUB: it should only have ONE anomaly event
+    proc_sub_anoms = [a for a in anoms if a["Record_ID"] == "MC_PROC_SUB"]
+    assert len(proc_sub_anoms) == 1, f"Error: Timeline anomaly not deduplicated! Expected 1, got {len(proc_sub_anoms)}"
     
     assert "MC_NEG_RETRY" in anom_ids
-    assert "MED-M013" in rules_triggered
+    assert "R_TECH_001" in rules_triggered
     
     assert "MC_SLA" in anom_ids
-    assert "MED-M014" in rules_triggered
+    assert "R_SLA_001" in rules_triggered
     
     print("Success: All Medical Rules tests passed successfully!\n")
 
@@ -116,7 +128,7 @@ def test_pharmacy_rules():
     df = pd.DataFrame([r_valid, r_neg_qty, r_zero_days])
     
     anoms = evaluate_pharmacy_rules(df, RULES_CONFIG)
-    anom_ids = [a["record_identifier"] for a in anoms]
+    anom_ids = [a["Record_ID"] for a in anoms]
     
     assert "PH_VALID" not in anom_ids
     assert "PH_NEG_QTY" in anom_ids
@@ -142,7 +154,7 @@ def test_authorization_rules():
     df = pd.DataFrame([r_valid, r_dec_before_sub])
     
     anoms = evaluate_authorization_rules(df, RULES_CONFIG)
-    anom_ids = [a["record_identifier"] for a in anoms]
+    anom_ids = [a["Record_ID"] for a in anoms]
     
     assert "PA_VALID" not in anom_ids
     assert "PA_DEC_SUB" in anom_ids

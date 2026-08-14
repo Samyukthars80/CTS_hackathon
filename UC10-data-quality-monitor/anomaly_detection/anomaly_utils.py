@@ -14,15 +14,16 @@ def create_anomaly_record(
 ) -> dict:
     """Instantiate a standardized anomaly record."""
     return {
-        "record_identifier": record_id,
-        "record_type": record_type,
-        "rule_id": rule_id,
-        "anomaly_category": category,
-        "affected_columns": affected_cols,
-        "observed_value": observed,
-        "expected_condition": expected,
-        "severity": severity,
-        "explanation": explanation,
-        "source_dataset": source_dataset,
-        "detection_timestamp": datetime.datetime.now().isoformat()
+        "Record_ID": record_id,
+        "Record_Type": record_type,
+        "Detection_Method": "Rule-Based",
+        "Anomaly_Category": category,
+        "Affected_Columns": affected_cols,
+        "Observed_Value": observed,
+        "Expected_Condition": expected,
+        "Severity": severity,
+        "Explanation": explanation,
+        "Rule_ID": rule_id,
+        "Source_Dataset": source_dataset,
+        "Detection_Timestamp": datetime.datetime.now().isoformat()
     }
