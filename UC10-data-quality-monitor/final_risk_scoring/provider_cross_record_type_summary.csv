@@ -1,0 +1,2 @@
+Provider_NPI,Active_Record_Type_Count,Medical_Claims_Submitted,Medical_Claims_Flagged,Pharmacy_Claims_Submitted,Pharmacy_Claims_Flagged,Prior_Auth_Submitted,Prior_Auth_Flagged,Total_Claims_Flagged,Provider_Risk_Level,Average_Risk_Score
+UNKNOWN_PROVIDER,3,18,10,21,14,21,12,36,HIGH,27.5

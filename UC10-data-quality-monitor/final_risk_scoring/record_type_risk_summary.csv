@@ -1,0 +1,4 @@
+Record_Type,Total_Records,Total_Flagged,Flag_Rate_Percentage,Critical_Count,High_Count,Medium_Count,Low_Count
+MEDICAL_CLAIM,5008,3911,78.1,51,184,1160,3613
+PHARMACY_CLAIM,2992,2037,68.08,26,40,114,2812
+PRIOR_AUTH,2000,1263,63.15,7,11,43,1939
