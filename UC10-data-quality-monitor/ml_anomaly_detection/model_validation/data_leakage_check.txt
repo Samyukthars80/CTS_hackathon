@@ -1,0 +1,36 @@
+DATA LEAKAGE AUDIT CHECK REPORT
+==================================================
+
+1. Preprocessing transformations fitted ONLY on training data?
+   - STATUS: PASS
+   - DETAIL: Medians, scalers, and categorical vocabularies are fitted strictly on the 80% train split and reused during transform.
+
+2. Test data is never used to fit the model?
+   - STATUS: PASS
+   - DETAIL: The Isolation Forest models are fit solely on the X_train preprocessed matrix.
+
+3. Target/anomaly labels generated after prediction are excluded from inputs?
+   - STATUS: PASS
+   - DETAIL: Predictions and flags are computed dynamically; features list only uses base behavioral columns.
+
+4. Unique Record_IDs are excluded from model features?
+   - STATUS: PASS
+   - DETAIL: Record_ID is dropped from the modeling matrices and only used as a tracking index.
+
+5. Timestamps or generated outputs are excluded?
+   - STATUS: PASS
+   - DETAIL: Ingestion_Timestamp, Batch_ID, Batch_Volume, etc., are dropped from features.
+
+6. Rule-Based anomaly labels are excluded from features?
+   - STATUS: PASS
+   - DETAIL: Rule anomalies are loaded separately post-hoc for overlap calculations and never enter the model.
+
+7. Statistical outlier flags are excluded from features?
+   - STATUS: PASS
+   - DETAIL: Outlier status is calculated independently on the output datasets.
+
+8. Preexisting ML prediction columns are excluded?
+   - STATUS: PASS
+   - DETAIL: Preprocessor reads raw cleaned datasets prior to appending any predictions.
+
+OVERALL PIPELINE INTEGRITY: PASS

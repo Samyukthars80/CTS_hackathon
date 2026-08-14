@@ -1,0 +1,4 @@
+Record_Type,Mean_Pairwise_Jaccard,Mean_Pairwise_Agreement,Consistently_Anomalous_Count,Consistently_Anomalous_Rate
+MEDICAL_CLAIM,88.10%,99.78%,15,1.50%
+PHARMACY_CLAIM,86.05%,99.73%,9,1.50%
+PRIOR_AUTH,90.00%,99.85%,5,1.25%

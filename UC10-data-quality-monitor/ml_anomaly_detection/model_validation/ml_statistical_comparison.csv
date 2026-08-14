@@ -1,0 +1,4 @@
+Record_Type,ML_Only_Anomalies,Statistical_Only_Anomalies,Common_Anomalies,Total_Unique_Anomalies,Overlap_Percentage
+MEDICAL_CLAIM,0,1745,101,1846,5.47%
+PHARMACY_CLAIM,1,921,59,981,6.01%
+PRIOR_AUTH,9,617,31,657,4.72%

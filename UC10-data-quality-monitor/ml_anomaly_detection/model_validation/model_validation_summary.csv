@@ -1,0 +1,4 @@
+Record_Type,Train_Rows,Test_Rows,Train_Anomaly_Count,Test_Anomaly_Count,Train_Anomaly_Rate,Test_Anomaly_Rate,Anomaly_Rate_Difference,Validation_Status
+MEDICAL_CLAIM,4006,1002,80,18,2.00%,1.80%,0.20%,STABLE
+PHARMACY_CLAIM,2393,599,48,11,2.01%,1.84%,0.17%,STABLE
+PRIOR_AUTH,1600,400,32,5,2.00%,1.25%,0.75%,STABLE
