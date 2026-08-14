@@ -1,0 +1,9 @@
+Check_Name,Status,Details
+No Duplicates,PASS,No duplicate Record_IDs exist in investigation_queue.csv
+Input Record Belonging,PASS,All scored Record_IDs belong to cleaned inputs
+"Score Bounds [0, 100]",PASS,"Scores are between 0 and 100. Min=0.0, Max=100.0"
+No Missing IDs,PASS,No Record_IDs are missing or NaN
+Category Matching,PASS,Risk categories strictly align with overall score thresholds
+Priority Mapping,PASS,Recommended priorities map correctly to risk categories
+No Duplicate Providers,PASS,No duplicate NPI groups exist in provider_risk_summary.csv
+Consensus Boost Verification,PASS,"Level 3 claims score higher on average than Level 1. L3=70.49, L1=30.60"
