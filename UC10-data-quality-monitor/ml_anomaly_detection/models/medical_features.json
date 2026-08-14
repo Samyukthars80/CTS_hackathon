@@ -1,0 +1,22 @@
+[
+    "Billed_Amount",
+    "Allowed_Amount",
+    "Paid_Amount",
+    "Retry_Count",
+    "Processing_Latency_Days",
+    "Beneficiary_Record_Count",
+    "Provider_Total_Records",
+    "Provider_Denial_Rate",
+    "Paid_to_Allowed_Ratio",
+    "Paid_to_Billed_Ratio",
+    "Allowed_to_Billed_Ratio",
+    "Beneficiary_Record_Count_is_missing",
+    "Provider_Total_Records_is_missing",
+    "Provider_Denial_Rate_is_missing",
+    "Paid_to_Allowed_Ratio_is_missing",
+    "Paid_to_Billed_Ratio_is_missing",
+    "Allowed_to_Billed_Ratio_is_missing",
+    "Provider_State",
+    "Status",
+    "Urgency_Flag"
+]

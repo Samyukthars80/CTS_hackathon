@@ -1,0 +1,4 @@
+Record_Type,Training_Rows,Test_Rows,Number_of_Features,Contamination,Total_Anomalies,Anomaly_Percentage,Median_Anomaly_Score,Minimum_Anomaly_Score,Maximum_Anomaly_Score
+MEDICAL_CLAIM,4006,1002,20,0.02,98,1.96,-0.1891,-0.2356,0.0656
+PHARMACY_CLAIM,2393,599,24,0.02,59,1.97,-0.1489,-0.2044,0.0925
+PRIOR_AUTH,1600,400,13,0.02,37,1.85,-0.1667,-0.251,0.0936

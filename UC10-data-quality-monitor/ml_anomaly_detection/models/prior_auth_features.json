@@ -1,0 +1,15 @@
+[
+    "Retry_Count",
+    "Processing_Latency_Days",
+    "SLA_Target_Days",
+    "Provider_Total_Records",
+    "Provider_Denial_Rate",
+    "Beneficiary_Record_Count",
+    "Processing_Latency_Days_is_missing",
+    "Provider_Total_Records_is_missing",
+    "Provider_Denial_Rate_is_missing",
+    "Beneficiary_Record_Count_is_missing",
+    "Provider_State",
+    "Status",
+    "Urgency_Flag"
+]

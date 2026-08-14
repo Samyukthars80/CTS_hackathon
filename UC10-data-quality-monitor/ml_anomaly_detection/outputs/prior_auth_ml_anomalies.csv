@@ -1,0 +1,38 @@
+Record_ID,Record_Type,Detection_Method,ML_Anomaly_Flag,Isolation_Forest_Score,Anomaly_Rank,Severity,Model_Name,Potential_Contributing_Factors
+PA301499,PRIOR_AUTH,Isolation Forest,1,0.012554848235141858,22,Medium,prior_auth_isolation_forest,Provider_State (TX) is unusual
+PA301893,PRIOR_AUTH,Isolation Forest,1,0.016542501444730462,17,High,prior_auth_isolation_forest,Provider_State (CA) is unusual
+PA300895,PRIOR_AUTH,Isolation Forest,1,0.0016514459969968476,37,Medium,prior_auth_isolation_forest,Provider_State (FL) is unusual
+PA301026,PRIOR_AUTH,Isolation Forest,1,0.024584598751782538,14,High,prior_auth_isolation_forest,Provider_State (WA) is unusual; Provider_Total_Records (2.00) is unusual
+PA301289,PRIOR_AUTH,Isolation Forest,1,0.03203706460201938,11,High,prior_auth_isolation_forest,Provider_State (OH) is unusual
+PA301059,PRIOR_AUTH,Isolation Forest,1,0.007797425383154422,26,Medium,prior_auth_isolation_forest,Provider_State (WA) is unusual
+PA301200,PRIOR_AUTH,Isolation Forest,1,0.036119292942808134,8,High,prior_auth_isolation_forest,SLA_Target_Days (3) is unusual
+PA300983,PRIOR_AUTH,Isolation Forest,1,0.007797874846707131,25,Medium,prior_auth_isolation_forest,Provider_State (FL) is unusual; Beneficiary_Record_Count (6.00) is unusual
+PA301158,PRIOR_AUTH,Isolation Forest,1,0.05244072174008807,3,High,prior_auth_isolation_forest,Provider_Total_Records (2.00) is unusual
+PA300962,PRIOR_AUTH,Isolation Forest,1,0.023936263808394864,16,High,prior_auth_isolation_forest,Provider_State (GA) is unusual
+PA300095,PRIOR_AUTH,Isolation Forest,1,0.025256928765411635,13,High,prior_auth_isolation_forest,Provider_State (FL) is unusual
+PA301450,PRIOR_AUTH,Isolation Forest,1,0.09362139478268294,1,High,prior_auth_isolation_forest,Provider_State (OH) is unusual
+PA300114,PRIOR_AUTH,Isolation Forest,1,0.0021848394087176093,33,Medium,prior_auth_isolation_forest,Provider_Total_Records (2.00) is unusual; Beneficiary_Record_Count (6.00) is unusual
+PA301625,PRIOR_AUTH,Isolation Forest,1,0.01467593802195355,20,High,prior_auth_isolation_forest,Provider_State (FL) is unusual
+PA301920,PRIOR_AUTH,Isolation Forest,1,0.03766572693567938,7,High,prior_auth_isolation_forest,Provider_State (OH) is unusual
+PA301745,PRIOR_AUTH,Isolation Forest,1,0.002067663819333876,35,Medium,prior_auth_isolation_forest,Provider_Total_Records (2.00) is unusual
+PA301660,PRIOR_AUTH,Isolation Forest,1,0.007457791438352124,27,Medium,prior_auth_isolation_forest,Provider_State (GA) is unusual
+PA300568,PRIOR_AUTH,Isolation Forest,1,0.03597417966889138,9,High,prior_auth_isolation_forest,Provider_State (TX) is unusual
+PA300315,PRIOR_AUTH,Isolation Forest,1,0.08508325461464805,2,High,prior_auth_isolation_forest,Provider_State (FL) is unusual
+PA301818,PRIOR_AUTH,Isolation Forest,1,0.014303919194505466,21,High,prior_auth_isolation_forest,Provider_State (GA) is unusual
+PA301083,PRIOR_AUTH,Isolation Forest,1,0.0024803674414833887,31,Medium,prior_auth_isolation_forest,Processing_Latency_Days (37.00) is unusual; Provider_State (GA) is unusual
+PA301639,PRIOR_AUTH,Isolation Forest,1,0.005998733722379357,28,Medium,prior_auth_isolation_forest,Provider_State (PA) is unusual; Provider_Total_Records (2.00) is unusual; Processing_Latency_Days (30.00) is unusual
+PA301996,PRIOR_AUTH,Isolation Forest,1,0.01556405003165573,18,High,prior_auth_isolation_forest,Provider_State (TX) is unusual
+PA300570,PRIOR_AUTH,Isolation Forest,1,0.03383634296948379,10,High,prior_auth_isolation_forest,Provider_State (PA) is unusual
+PA300422,PRIOR_AUTH,Isolation Forest,1,0.01556405003165573,19,High,prior_auth_isolation_forest,Provider_State (TX) is unusual
+PA300855,PRIOR_AUTH,Isolation Forest,1,0.0022778335847335462,32,Medium,prior_auth_isolation_forest,Provider_State (PA) is unusual
+PA300438,PRIOR_AUTH,Isolation Forest,1,0.0029488937794286407,30,Medium,prior_auth_isolation_forest,Status (PENDING) is unusual
+PA300363,PRIOR_AUTH,Isolation Forest,1,0.007861710050411364,23,Medium,prior_auth_isolation_forest,Provider_State (WA) is unusual; Provider_Total_Records (2.00) is unusual
+PA301386,PRIOR_AUTH,Isolation Forest,1,0.025598265628360983,12,High,prior_auth_isolation_forest,Provider_State (NY) is unusual
+PA301553,PRIOR_AUTH,Isolation Forest,1,0.05206944829710636,5,High,prior_auth_isolation_forest,Provider_State (PA) is unusual; Provider_Total_Records (2.00) is unusual
+PA301158_DUP,PRIOR_AUTH,Isolation Forest,1,0.05244072174008807,4,High,prior_auth_isolation_forest,Provider_Total_Records (2.00) is unusual
+PA301553_DUP,PRIOR_AUTH,Isolation Forest,1,0.05206944829710636,6,High,prior_auth_isolation_forest,Provider_State (PA) is unusual; Provider_Total_Records (2.00) is unusual
+PA300363_DUP,PRIOR_AUTH,Isolation Forest,1,0.007861710050411364,24,Medium,prior_auth_isolation_forest,Provider_State (WA) is unusual; Provider_Total_Records (2.00) is unusual
+PA301026_DUP,PRIOR_AUTH,Isolation Forest,1,0.024584598751782538,15,High,prior_auth_isolation_forest,Provider_State (WA) is unusual; Provider_Total_Records (2.00) is unusual
+PA300114_DUP,PRIOR_AUTH,Isolation Forest,1,0.0021848394087176093,34,Medium,prior_auth_isolation_forest,Provider_Total_Records (2.00) is unusual; Beneficiary_Record_Count (6.00) is unusual
+PA301745_DUP,PRIOR_AUTH,Isolation Forest,1,0.002067663819333876,36,Medium,prior_auth_isolation_forest,Provider_Total_Records (2.00) is unusual
+PA301639_DUP,PRIOR_AUTH,Isolation Forest,1,0.005998733722379357,29,Medium,prior_auth_isolation_forest,Provider_State (PA) is unusual; Provider_Total_Records (2.00) is unusual; Processing_Latency_Days (30.00) is unusual
