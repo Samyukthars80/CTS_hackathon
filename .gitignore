@@ -1,0 +1,14 @@
+# Exclude backend folder (pushed separately)
+backend/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# DuckDB binary database (regenerated at runtime)
+*.duckdb
+
+# OS
+.DS_Store
+Thumbs.db

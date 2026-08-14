@@ -1,0 +1,51 @@
+Column,Data_Type,Missing_Count,Missing_Pct,Unique_Count,Invalid_Count,Anomaly_Count,Min,Max,Example_Value,Cleaning_Action
+Record_ID,str,0,0.0,10000,0,0,,,PH202054,Preserved as identifier; excluded from numerical ML features
+Record_Type,str,0,0.0,3,0,0,,,PHARMACY_CLAIM,No action required
+BENE_ID,float64,150,1.5,5140,0,0,-10000010288007.0,-90041619562.0,-10000010266882.0,Preserved as identifier; excluded from numerical ML features
+Provider_NPI,float64,60,0.6,6125,0,0,1000191866.0,1999579440.0,1196712677.0,Preserved as identifier; excluded from numerical ML features
+Provider_State,str,0,0.0,28,0,0,,,AZ,No action required
+Service_Date,str,1971,19.71,2699,0,0,,,2025-07-24,Parsed to datetime with errors='coerce'; ParseFail indicator created
+Service_End_Date,str,2000,20.0,2689,0,0,,,2025-07-24,Parsed to datetime with errors='coerce'; ParseFail indicator created
+Submission_Date,str,0,0.0,2720,0,0,,,2025-07-24,Parsed to datetime with errors='coerce'; ParseFail indicator created
+Processed_Date,str,286,2.86,2004,0,0,,,2025-07-24 00:00:00,Parsed to datetime with errors='coerce'; ParseFail indicator created
+Decision_Date,str,8227,82.27,1380,0,0,,,2025-04-24 12:00:00,Parsed to datetime with errors='coerce'; ParseFail indicator created
+Status,str,0,0.0,5,0,0,,,PAID,No action required
+Denial_Reason_Code,str,9075,90.75,8,0,0,,,75_PRESC_NOT_COVERED,Missingness indicator created; no imputation of identifiers
+Diagnosis_Code,str,4992,49.92,146,0,0,,,T50901A,Missing expected for non-applicable Record_Type; missingness flag created
+Procedure_Code,str,8000,80.0,8,0,0,,,PHYSICAL_THERAPY_EXT,Missingness indicator created; no imputation of identifiers
+NDC_Code,str,7008,70.08,2925,0,0,,,93726-811-16,Missing expected for non-applicable Record_Type; missingness flag created
+Drug_Name,str,7008,70.08,423,0,0,,,PENTAZOCINE-ACETAMINOPHEN,Missing expected for non-applicable Record_Type; missingness flag created
+Days_Supply,float64,7008,70.08,3,0,0,30.0,90.0,30.0,Missingness indicator created; no imputation of identifiers
+Quantity_Dispensed,float64,7008,70.08,110,0,0,24.0,135.0,24.0,Missingness indicator created; no imputation of identifiers
+Billed_Amount,float64,2000,20.0,5969,0,0,-11306.05,2510652.42419413,181.38,Missingness indicator created; no imputation of identifiers
+Allowed_Amount,float64,2000,20.0,6234,0,0,-1884.03,51194.77,131.78,Missingness indicator created; no imputation of identifiers
+Paid_Amount,float64,2000,20.0,6258,0,0,-11422.34,51194.77,131.78,Missingness indicator created; no imputation of identifiers
+Patient_Responsibility,float64,2000,20.0,2812,0,0,0.0,1068.79,49.6,Missingness indicator created; no imputation of identifiers
+Urgency_Flag,str,8000,80.0,2,0,0,,,STANDARD,Missingness indicator created; no imputation of identifiers
+Auth_Required_Flag,str,0,0.0,2,0,0,,,Y,No action required
+Auth_Linked_ID,str,9897,98.97,85,0,0,,,PA301587,Preserved as identifier; excluded from numerical ML features
+Batch_ID,str,0,0.0,2719,0,0,,,BATCH_20250724,Preserved as identifier; excluded from numerical ML features
+Source_System,str,0,0.0,3,0,0,,,PHARMACY_ADJ_SYS,No action required
+Ingestion_Timestamp,str,0,0.0,6262,0,0,,,2025-07-24 01:00:00,Parsed to datetime with errors='coerce'; ParseFail indicator created
+Retry_Count,int64,0,0.0,4,0,0,0,3,0,No action required
+Processing_Latency_Days,float64,286,2.86,48,0,0,-8.0,41.0,0.0,Missing flagged; median-imputed per Record_Type
+SLA_Target_Days,int64,0,0.0,4,0,0,2,30,2,No action required
+SLA_Breach_Flag,str,0,0.0,3,0,0,,,N,No action required
+Batch_Date,str,0,0.0,2719,0,0,,,2025-07-24,Parsed to datetime with errors='coerce'; ParseFail indicator created
+Provider_Total_Records,float64,60,0.6,36,0,0,1.0,554.0,1.0,Missingness indicator created; no imputation of identifiers
+Provider_Denial_Rate,float64,60,0.6,20,0,0,0.0,1.0,0.0,Missingness indicator created; no imputation of identifiers
+Batch_Volume,int64,0,0.0,26,0,0,1,27,17,No action required
+Rolling_7D_Avg_Volume,float64,0,0.0,86,0,0,1.0,18.86,14.43,No action required
+Volume_Vs_Trend_Ratio,float64,0,0.0,155,0,0,0.29,3.62,1.18,No action required
+Batch_SLA_Breach_Rate,float64,0,0.0,84,0,0,0.0,0.9,0.4117647058823529,No action required
+Rolling_7D_Avg_SLA_Breach_Rate,float64,0,0.0,304,0,0,0.0,0.4234,0.3174,No action required
+SLA_Breach_Rate_Vs_Trend_Diff,float64,0,0.0,326,0,0,-0.313,0.5267,0.0944,No action required
+Beneficiary_Record_Count,float64,150,1.5,25,0,0,1.0,29.0,2.0,Missingness indicator created; no imputation of identifiers
+High_Frequency_Beneficiary_Flag,bool,0,0.0,2,0,0,False,True,False,No action required
+Missing_Required_Auth_Link,bool,0,0.0,2,0,3492,False,True,True,No action required
+Days_Since_Prev_Batch,float64,18,0.18,5,0,0,1.0,5.0,1.0,Missingness indicator created; no imputation of identifiers
+Pipeline_Gap_Flag,bool,0,0.0,2,0,0,False,True,False,No action required
+Submission_Day_Of_Week,str,0,0.0,7,0,0,,,Thursday,No action required
+DOW_Avg_SLA_Breach_Rate,float64,0,0.0,7,0,0,0.1499312242090784,0.1711899791231732,0.1591895803183791,No action required
+Record_SLA_Breach_Numeric,int64,0,0.0,2,0,0,0,1,0,No action required
+SLA_Breach_Vs_DOW_Norm,float64,0,0.0,14,0,0,-0.1712,0.8501,-0.1592,No action required
