@@ -1,0 +1,9 @@
+{
+    "batch_id": "BATCH_20250724",
+    "batch_record_count": 10000,
+    "breach_count": 1587,
+    "sla_breach_rate": 0.1587,
+    "retry_count_summary": 8452,
+    "pipeline_gap_flag_count": 0,
+    "batch_sla_risk_level": "HIGH"
+}
