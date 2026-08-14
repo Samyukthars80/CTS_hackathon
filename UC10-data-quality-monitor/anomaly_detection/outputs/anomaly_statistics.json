@@ -1,0 +1,58 @@
+{
+    "global_summary": {
+        "total_records_analyzed": 10000,
+        "total_records_flagged": 4482,
+        "total_rule_violations": 7609,
+        "overall_anomaly_rate_pct": 44.82
+    },
+    "by_record_type": {
+        "MEDICAL_CLAIM": {
+            "analyzed": 5008,
+            "flagged": 2815,
+            "violations": 5813
+        },
+        "PHARMACY_CLAIM": {
+            "analyzed": 2992,
+            "flagged": 1237,
+            "violations": 1366
+        },
+        "PRIOR_AUTH": {
+            "analyzed": 2000,
+            "flagged": 430,
+            "violations": 430
+        }
+    },
+    "violations_by_rule": {
+        "MED-M001": 16,
+        "MED-M002": 20,
+        "MED-M003": 15,
+        "MED-M005": 73,
+        "MED-M006": 16,
+        "MED-M007": 69,
+        "MED-M008": 57,
+        "MED-M009": 57,
+        "MED-M010": 2745,
+        "MED-M012": 2745,
+        "PH-M001": 7,
+        "PH-M002": 9,
+        "PH-M003": 7,
+        "PH-M005": 37,
+        "PH-M006": 7,
+        "PH-M007": 35,
+        "PH-M012": 107,
+        "PH-M013": 1157,
+        "AUTH-M007": 430
+    },
+    "violations_by_category": {
+        "Invalid Financial Value": 74,
+        "Logical Inconsistency": 237,
+        "Chronological Anomaly": 2966,
+        "Invalid Technical Value": 2745,
+        "SLA Violation": 1587
+    },
+    "violations_by_severity": {
+        "HIGH": 5942,
+        "MEDIUM": 1667,
+        "LOW": 0
+    }
+}
