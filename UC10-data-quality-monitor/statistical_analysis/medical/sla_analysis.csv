@@ -1,0 +1,2 @@
+mean_processing_latency,median_processing_latency,std_processing_latency,90th_percentile_latency,95th_percentile_latency,99th_percentile_latency,proportion_exceeding_sla_target,y_count,n_count,y_mean_latency,n_mean_latency,y_mean_retry,n_mean_retry
+-0.9772544283413849,-1.0,3.2981631187377634,4.0,4.649999999999636,6.0,0.0,0,4968,,-0.9772544283413849,,0.8478260869565217

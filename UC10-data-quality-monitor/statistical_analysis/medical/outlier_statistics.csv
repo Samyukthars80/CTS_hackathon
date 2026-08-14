@@ -1,0 +1,8 @@
+column,total_non_null_records,Q1,Q3,IQR,iqr_lower_bound,iqr_upper_bound,iqr_outlier_count,iqr_outlier_percentage,zscore_outlier_count_3sd,percentile_1st_lower_count,percentile_99th_upper_count
+Billed_Amount,5008,851.0,1617.66,766.6600000000001,-298.99000000000024,2767.6500000000005,341,6.809105431309905,8,50,51
+Allowed_Amount,5008,623.565,1275.1675,651.6025,-353.8387499999999,2252.57125,311,6.210063897763578,150,20,51
+Paid_Amount,5008,625.9,1284.18,658.2800000000001,-361.5200000000001,2271.6000000000004,322,6.429712460063898,149,15,51
+Patient_Responsibility,5008,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0
+Retry_Count,5008,0.0,2.0,2.0,-3.0,5.0,0,0.0,0,0,0
+Processing_Latency_Days,4968,-3.0,1.0,4.0,-9.0,7.0,0,0.0,0,0,0
+SLA_Target_Days,5008,30.0,30.0,0.0,30.0,30.0,0,0.0,0,0,0

@@ -1,0 +1,4 @@
+column,total_non_null_records,Q1,Q3,IQR,iqr_lower_bound,iqr_upper_bound,iqr_outlier_count,iqr_outlier_percentage,zscore_outlier_count_3sd,percentile_1st_lower_count,percentile_99th_upper_count
+Retry_Count,2000,0.0,2.0,2.0,-3.0,5.0,0,0.0,0,0,0
+Processing_Latency_Days,1773,5.0,13.0,8.0,-7.0,25.0,31,1.7484489565707841,16,0,18
+SLA_Target_Days,2000,14.0,14.0,0.0,14.0,14.0,415,20.75,0,0,0

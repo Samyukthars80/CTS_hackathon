@@ -1,0 +1,2 @@
+pearson_correlation,spearman_correlation,mean_quantity_per_day,median_quantity_per_day,min_quantity_per_day,max_quantity_per_day,std_quantity_per_day,iqr_quantity_per_day
+0.9286895907899225,0.8706754454030726,1.1500408496732026,1.1555555555555554,0.8,1.5,0.20248440011269916,0.3666666666666666
