@@ -1,0 +1,8 @@
+Check_Name,Status,Details
+P1 Risk Scores,PASS,Checked that all P1 Critical claims contain valid risk scores (85 claims).
+Detection Source Presence,PASS,"All flagged claims contain at least one anomaly source (ML, Rules, or Statistics)"
+No Duplicate Record IDs,PASS,No duplicate Record_IDs exist in final_investigation_queue.csv
+"Score Bounds [0, 100]",PASS,"Risk scores are bound in [0, 100]. Min=0.01, Max=100.0"
+Priority Category Match,PASS,Priority values map correctly to Risk Category brackets
+Consensus Flag Consistency,PASS,Consensus levels align exactly with active detection flags count
+Untouched Previous Pipeline,PASS,Verified that all previous stages files exist and remain unmodified
