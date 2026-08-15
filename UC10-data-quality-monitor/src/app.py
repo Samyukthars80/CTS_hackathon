@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import json
 import pandas as pd
 import os
@@ -93,16 +93,8 @@ st.markdown("""
     }
     .detail-section h4 { color: #60a5fa; margin: 0 0 10px 0; }
 
-    /* Dataframe — full column visibility */
-    .stDataFrame { border-radius: 8px; }
-    .stDataFrame [data-testid="stDataFrameResizable"] {
-        width: 100% !important;
-        overflow-x: auto !important;
-    }
-    .stDataFrame td, .stDataFrame th {
-        white-space: nowrap !important;
-        min-width: 90px !important;
-    }
+    /* Dataframe */
+    .stDataFrame { border-radius: 8px; overflow: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -134,7 +126,7 @@ def load_csv(filepath):
     if os.path.exists(fp):
         df = pd.read_csv(fp)
         str_cols = df.select_dtypes(include=["object"]).columns
-        df[str_cols] = df[str_cols].fillna("\u2014")
+        df[str_cols] = df[str_cols].fillna("—")
         return df
     return None
 
@@ -314,7 +306,7 @@ if page == "🏠 Overview":
     if df_rt is not None:
         st.markdown("---")
         st.subheader("Risk by Record Type")
-        st.dataframe(df_rt, width="stretch", hide_index=True)
+        st.dataframe(df_rt, use_container_width=True, hide_index=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -368,7 +360,7 @@ elif page == "🚨 Investigation Queue":
         cons_options = sorted(df_queue["Consensus_Level"].unique().tolist(), reverse=True)
         cons_f = st.multiselect("Consensus Level", cons_options, default=cons_options, key="iq_cons")
     with fc4:
-        sev_options = [s for s in df_queue["Rule_Severity"].unique().tolist() if s != "\u2014"]
+        sev_options = [s for s in df_queue["Rule_Severity"].unique().tolist() if s != "—"]
         sev_f = st.multiselect("Rule Severity", sev_options, default=sev_options, key="iq_sev") if sev_options else []
 
     df_filt = df_queue[
@@ -377,7 +369,7 @@ elif page == "🚨 Investigation Queue":
         (df_queue["Consensus_Level"].isin(cons_f))
     ]
     if sev_f:
-        df_filt = df_filt[(df_filt["Rule_Severity"].isin(sev_f)) | (df_filt["Rule_Severity"] == "\u2014")]
+        df_filt = df_filt[(df_filt["Rule_Severity"].isin(sev_f)) | (df_filt["Rule_Severity"] == "—")]
 
     st.markdown(f"**Showing {len(df_filt):,} records**")
 
@@ -387,7 +379,7 @@ elif page == "🚨 Investigation Queue":
                                 "Anomaly_Categories", "Why_Flagged", "Explanation"] if c in df_filt.columns]
     st.dataframe(
         df_filt[display_cols].sort_values("Rank"),
-        width="stretch",
+        use_container_width=True,
         hide_index=True,
         height=600,
         column_config={
@@ -419,10 +411,10 @@ elif page == "🚨 Investigation Queue":
                 st.metric("Priority", row["Risk_Priority"])
             with dc3:
                 st.metric("Consensus", f"{int(row['Consensus_Level'])} method(s)")
-            st.markdown(f"**Detection Methods:** {row.get('Detection_Methods', '\u2014')}")
-            st.markdown(f"**Rule IDs:** {row.get('Rule_IDs', '\u2014')}")
-            st.markdown(f"**Why Flagged:** {row.get('Why_Flagged', '\u2014')}")
-            if "Explanation" in row.index and row.get("Explanation", "\u2014") != "\u2014":
+            st.markdown(f"**Detection Methods:** {row.get('Detection_Methods', '—')}")
+            st.markdown(f"**Rule IDs:** {row.get('Rule_IDs', '—')}")
+            st.markdown(f"**Why Flagged:** {row.get('Why_Flagged', '—')}")
+            if "Explanation" in row.index and row.get("Explanation", "—") != "—":
                 st.markdown("---")
                 st.markdown("#### Why was this flagged?")
                 st.info(row["Explanation"])
@@ -471,15 +463,15 @@ elif page == "🔎 Claims Explorer":
                     with info1:
                         st.markdown(f"**Record ID:** {rec_id}")
                         st.markdown(f"**Record Type:** {claim['Record_Type']}")
-                        st.markdown(f"**Provider NPI:** {claim.get('Provider_NPI', '\u2014')}")
+                        st.markdown(f"**Provider NPI:** {claim.get('Provider_NPI', '—')}")
                     with info2:
-                        st.markdown(f"**BENE ID:** {claim.get('BENE_ID', '\u2014')}")
-                        st.markdown(f"**Provider State:** {claim.get('Provider_State', '\u2014')}")
-                        st.markdown(f"**Status:** {claim.get('Status', '\u2014')}")
+                        st.markdown(f"**BENE ID:** {claim.get('BENE_ID', '—')}")
+                        st.markdown(f"**Provider State:** {claim.get('Provider_State', '—')}")
+                        st.markdown(f"**Status:** {claim.get('Status', '—')}")
                     with info3:
-                        st.markdown(f"**Source System:** {claim.get('Source_System', '\u2014')}")
-                        st.markdown(f"**Batch ID:** {claim.get('Batch_ID', '\u2014')}")
-                        st.markdown(f"**Urgency Flag:** {claim.get('Urgency_Flag', '\u2014')}")
+                        st.markdown(f"**Source System:** {claim.get('Source_System', '—')}")
+                        st.markdown(f"**Batch ID:** {claim.get('Batch_ID', '—')}")
+                        st.markdown(f"**Urgency Flag:** {claim.get('Urgency_Flag', '—')}")
 
                     # ── Financial Information ──
                     st.markdown("#### 💰 Financial Information")
@@ -497,13 +489,13 @@ elif page == "🔎 Claims Explorer":
                     st.markdown("#### 📅 Timeline")
                     t1, t2, t3, t4 = st.columns(4)
                     with t1:
-                        st.markdown(f"**Service Date:** {claim.get('Service_Date', '\u2014')}")
+                        st.markdown(f"**Service Date:** {claim.get('Service_Date', '—')}")
                     with t2:
-                        st.markdown(f"**Submission Date:** {claim.get('Submission_Date', '\u2014')}")
+                        st.markdown(f"**Submission Date:** {claim.get('Submission_Date', '—')}")
                     with t3:
-                        st.markdown(f"**Processed Date:** {claim.get('Processed_Date', '\u2014')}")
+                        st.markdown(f"**Processed Date:** {claim.get('Processed_Date', '—')}")
                     with t4:
-                        st.markdown(f"**Decision Date:** {claim.get('Decision_Date', '\u2014')}")
+                        st.markdown(f"**Decision Date:** {claim.get('Decision_Date', '—')}")
 
                     # ── Detection Results ──
                     st.markdown("#### 🔍 Detection Results")
@@ -521,19 +513,19 @@ elif page == "🔎 Claims Explorer":
                             st.markdown("**ML Detection**")
                             ml_flag = int(score_row.get("ML_Flag", 0))
                             st.markdown(f"Flag: {'🔴 Yes' if ml_flag else '🟢 No'}")
-                            st.markdown(f"Score: {score_row.get('ML_Anomaly_Score', '\u2014')}")
-                            st.markdown(f"Percentile: {score_row.get('ML_Anomaly_Percentile', '\u2014')}")
+                            st.markdown(f"Score: {score_row.get('ML_Anomaly_Score', '—')}")
+                            st.markdown(f"Percentile: {score_row.get('ML_Anomaly_Percentile', '—')}")
                         with det2:
                             st.markdown("**Rule-Based Detection**")
                             rule_flag = int(score_row.get("Rule_Flag", 0))
                             st.markdown(f"Flag: {'🔴 Yes' if rule_flag else '🟢 No'}")
-                            st.markdown(f"Severity: {score_row.get('Rule_Severity', '\u2014')}")
-                            st.markdown(f"Rule IDs: {score_row.get('Rule_IDs', '\u2014')}")
+                            st.markdown(f"Severity: {score_row.get('Rule_Severity', '—')}")
+                            st.markdown(f"Rule IDs: {score_row.get('Rule_IDs', '—')}")
                         with det3:
                             st.markdown("**Statistical Detection**")
                             stat_flag = int(score_row.get("Statistical_Flag", 0))
                             st.markdown(f"Flag: {'🔴 Yes' if stat_flag else '🟢 No'}")
-                            st.markdown(f"Categories: {score_row.get('Statistical_Categories', '\u2014')}")
+                            st.markdown(f"Categories: {score_row.get('Statistical_Categories', '—')}")
 
                         # Consensus & Risk
                         st.markdown("#### 📊 Risk Assessment")
@@ -545,7 +537,7 @@ elif page == "🔎 Claims Explorer":
                         with r3:
                             st.metric("Consensus Level", f"{int(score_row['Consensus_Level'])}")
                         with r4:
-                            st.metric("Detection Methods", score_row.get("Detection_Methods", "\u2014"))
+                            st.metric("Detection Methods", score_row.get("Detection_Methods", "—"))
 
                     # ── Rule Violations Detail ──
                     if df_rules is not None:
@@ -555,7 +547,7 @@ elif page == "🔎 Claims Explorer":
                             st.dataframe(
                                 rec_rules[["Rule_ID", "Anomaly_Category", "Severity", "Affected_Columns",
                                            "Observed_Value", "Expected_Condition", "Explanation"]],
-                                width="stretch", hide_index=True,
+                                use_container_width=True, hide_index=True,
                                 column_config={
                                     "Explanation": st.column_config.TextColumn("Explanation", width="large"),
                                 },
@@ -570,8 +562,8 @@ elif page == "🔎 Claims Explorer":
                         inv_match = df_inv[df_inv["Record_ID"] == rec_id]
                         if not inv_match.empty:
                             inv_row = inv_match.iloc[0]
-                            expl = inv_row.get("Explanation", "\u2014")
-                            if expl != "\u2014":
+                            expl = inv_row.get("Explanation", "—")
+                            if expl != "—":
                                 st.info(expl)
                                 explanation_shown = True
 
@@ -580,13 +572,13 @@ elif page == "🔎 Claims Explorer":
                         ml_match = df_ml_expl[df_ml_expl["Record_ID"] == rec_id]
                         if not ml_match.empty:
                             for _, ml_row in ml_match.iterrows():
-                                st.info(ml_row.get("Plain_Language_Explanation", "\u2014"))
+                                st.info(ml_row.get("Plain_Language_Explanation", "—"))
                                 explanation_shown = True
 
                     # Fallback
                     if score_row is not None and not explanation_shown:
-                        wf = score_row.get("Why_Flagged", "\u2014")
-                        if wf != "\u2014":
+                        wf = score_row.get("Why_Flagged", "—")
+                        if wf != "—":
                             st.info(wf)
                         else:
                             st.caption("No specific explanation available for this record.")
@@ -601,7 +593,7 @@ elif page == "🔎 Claims Explorer":
                 st.dataframe(
                     top[["Record_ID", "Record_Type", "Final_Risk_Score", "Risk_Priority",
                          "Consensus_Level", "Detection_Methods", "Why_Flagged"]].sort_values("Final_Risk_Score", ascending=False),
-                    width="stretch", hide_index=True,
+                    use_container_width=True, hide_index=True,
                     column_config={
                         "Why_Flagged": st.column_config.TextColumn("Why Flagged", width="large"),
                     },
@@ -671,7 +663,7 @@ elif page == "👤 Provider Risk":
                     "Critical_Risk_Record_Count", "High_Risk_Record_Count", "Average_Risk_Score",
                     "Maximum_Risk_Score", "ML_Flag_Count", "Rule_Flag_Count", "Statistical_Flag_Count",
                     "Average_Consensus_Level", "Provider_Risk_Level"]],
-        width="stretch", hide_index=True,
+        use_container_width=True, hide_index=True,
         column_config={
             "Provider_NPI": st.column_config.NumberColumn("Provider NPI", format="%d", width="medium"),
             "Flagged_Record_Rate": st.column_config.NumberColumn("Flag Rate %", format="%.1f"),
@@ -688,7 +680,7 @@ elif page == "👤 Provider Risk":
     st.dataframe(
         df_filt[["Provider_NPI", "Record_Count", "Flagged_Record_Count", "Flagged_Record_Rate",
                  "Critical_Risk_Record_Count", "Average_Risk_Score", "Provider_Risk_Level"]],
-        width="stretch", hide_index=True, height=400,
+        use_container_width=True, hide_index=True, height=400,
         column_config={
             "Provider_NPI": st.column_config.NumberColumn("Provider NPI", format="%d"),
             "Flagged_Record_Rate": st.column_config.NumberColumn("Flag Rate %", format="%.1f"),
@@ -732,9 +724,9 @@ elif page == "👤 Provider Risk":
                     inv_row = inv_match.iloc[0]
                     st.markdown("---")
                     st.markdown("#### Investigation Assessment")
-                    st.markdown(f"**Status:** {inv_row.get('Provider_Status', '\u2014')}")
-                    st.markdown(f"**Primary Risk Factors:** {inv_row.get('Primary_Risk_Factors', '\u2014')}")
-                    if inv_row.get("Provider_Explanation", "\u2014") != "\u2014":
+                    st.markdown(f"**Status:** {inv_row.get('Provider_Status', '—')}")
+                    st.markdown(f"**Primary Risk Factors:** {inv_row.get('Primary_Risk_Factors', '—')}")
+                    if inv_row.get("Provider_Explanation", "—") != "—":
                         st.info(inv_row["Provider_Explanation"])
         else:
             st.warning(f"Provider NPI `{npi_input}` not found.")
@@ -757,7 +749,7 @@ elif page == "📊 Statistical Analysis":
     if df_desc is not None:
         st.dataframe(
             df_desc,
-            width="stretch", hide_index=True,
+            use_container_width=True, hide_index=True,
             column_config={
                 "column": st.column_config.TextColumn("Variable", width="medium"),
                 "mean": st.column_config.NumberColumn("Mean", format="%.2f"),
@@ -779,7 +771,7 @@ elif page == "📊 Statistical Analysis":
     if df_outlier is not None:
         st.dataframe(
             df_outlier,
-            width="stretch", hide_index=True,
+            use_container_width=True, hide_index=True,
             column_config={
                 "column": st.column_config.TextColumn("Variable", width="medium"),
                 "iqr_outlier_count": st.column_config.NumberColumn("IQR Outliers"),
@@ -796,7 +788,7 @@ elif page == "📊 Statistical Analysis":
     st.subheader(f"Missing Value Analysis — {selected_rt}")
     df_miss = load_csv(f"statistical_analysis/{rt_key}/missingness_statistics.csv")
     if df_miss is not None:
-        st.dataframe(df_miss, width="stretch", hide_index=True)
+        st.dataframe(df_miss, use_container_width=True, hide_index=True)
     else:
         data_unavailable(f"statistical_analysis/{rt_key}/missingness_statistics.csv")
 
@@ -806,7 +798,7 @@ elif page == "📊 Statistical Analysis":
     st.subheader(f"Provider Statistics — {selected_rt}")
     df_prov_stat = load_csv(f"statistical_analysis/{rt_key}/provider_statistics.csv")
     if df_prov_stat is not None:
-        st.dataframe(df_prov_stat.head(30), width="stretch", hide_index=True, height=400)
+        st.dataframe(df_prov_stat.head(30), use_container_width=True, hide_index=True, height=400)
     else:
         data_unavailable(f"statistical_analysis/{rt_key}/provider_statistics.csv")
 
@@ -819,7 +811,7 @@ elif page == "📊 Statistical Analysis":
         cat_cols = df_cat["column"].unique().tolist()
         sel_cat = st.selectbox("Select Variable", cat_cols, key="sa_cat")
         cat_filt = df_cat[df_cat["column"] == sel_cat]
-        st.dataframe(cat_filt, width="stretch", hide_index=True)
+        st.dataframe(cat_filt, use_container_width=True, hide_index=True)
     else:
         data_unavailable(f"statistical_analysis/{rt_key}/categorical_statistics.csv")
 
@@ -916,7 +908,7 @@ elif page == "📋 Rule Violations":
         Unique_Records=("Record_ID", "nunique"),
         Example_Record=("Record_ID", "first"),
     ).reset_index().sort_values("Violations", ascending=False)
-    st.dataframe(rule_summary, width="stretch", hide_index=True)
+    st.dataframe(rule_summary, use_container_width=True, hide_index=True)
 
     st.markdown("---")
 
@@ -925,7 +917,7 @@ elif page == "📋 Rule Violations":
     st.dataframe(
         df_filt[["Record_ID", "Record_Type", "Rule_ID", "Severity", "Anomaly_Category",
                  "Affected_Columns", "Observed_Value", "Expected_Condition", "Explanation"]],
-        width="stretch", hide_index=True, height=500,
+        use_container_width=True, hide_index=True, height=500,
         column_config={
             "Observed_Value": st.column_config.TextColumn("Observed", width="medium"),
             "Expected_Condition": st.column_config.TextColumn("Expected", width="medium"),
@@ -975,7 +967,7 @@ elif page == "🤖 ML Detection":
         feat_filt = df_feat[df_feat["Record_Type"] == sel_rt]
         if not feat_filt.empty:
             used = feat_filt[feat_filt["Used_For_Model"] == True] if "Used_For_Model" in feat_filt.columns else feat_filt
-            st.dataframe(used, width="stretch", hide_index=True)
+            st.dataframe(used, use_container_width=True, hide_index=True)
             st.caption(f"Total features used: {len(used)}")
         else:
             st.caption("No feature data for this record type.")
@@ -994,7 +986,7 @@ elif page == "🤖 ML Detection":
                                      "Severity", "Potential_Contributing_Factors"] if c in df_anom2.columns]
         st.dataframe(
             df_anom2[display_cols].sort_values("Anomaly_Rank") if "Anomaly_Rank" in df_anom2.columns else df_anom2[display_cols],
-            width="stretch", hide_index=True, height=400,
+            use_container_width=True, hide_index=True, height=400,
             column_config={
                 "Potential_Contributing_Factors": st.column_config.TextColumn("Contributing Factors", width="large"),
             },
@@ -1010,7 +1002,7 @@ elif page == "🤖 ML Detection":
     if df_expl is not None:
         st.dataframe(
             df_expl,
-            width="stretch", hide_index=True,
+            use_container_width=True, hide_index=True,
             column_config={
                 "Plain_Language_Explanation": st.column_config.TextColumn("Explanation", width="large"),
                 "Top_Contributing_Features": st.column_config.TextColumn("Top Features", width="medium"),
@@ -1044,7 +1036,7 @@ elif page == "✅ Model Validation":
     if df_val is not None:
         st.dataframe(
             df_val,
-            width="stretch", hide_index=True,
+            use_container_width=True, hide_index=True,
             column_config={
                 "Train_Anomaly_Rate": st.column_config.NumberColumn("Train Rate %", format="%.2f%%"),
                 "Test_Anomaly_Rate": st.column_config.NumberColumn("Test Rate %", format="%.2f%%"),
@@ -1061,7 +1053,7 @@ elif page == "✅ Model Validation":
     if df_stab is not None:
         st.dataframe(
             df_stab,
-            width="stretch", hide_index=True,
+            use_container_width=True, hide_index=True,
             column_config={
                 "Mean_Pairwise_Jaccard": st.column_config.NumberColumn("Avg Jaccard", format="%.4f"),
                 "Mean_Pairwise_Agreement": st.column_config.NumberColumn("Avg Agreement", format="%.4f"),
@@ -1079,7 +1071,7 @@ elif page == "✅ Model Validation":
     if df_contam is not None:
         st.dataframe(
             df_contam,
-            width="stretch", hide_index=True,
+            use_container_width=True, hide_index=True,
             column_config={
                 "Contamination": st.column_config.NumberColumn("Contamination", format="%.2f"),
                 "Anomaly_Percentage": st.column_config.NumberColumn("Anomaly %", format="%.2f%%"),
@@ -1108,7 +1100,7 @@ elif page == "✅ Model Validation":
     if df_score_stats is not None:
         st.dataframe(
             df_score_stats,
-            width="stretch", hide_index=True,
+            use_container_width=True, hide_index=True,
             column_config={
                 "Mean": st.column_config.NumberColumn("Mean", format="%.4f"),
                 "Median": st.column_config.NumberColumn("Median", format="%.4f"),
@@ -1128,13 +1120,13 @@ elif page == "✅ Model Validation":
     with cmp1:
         st.markdown("**ML vs Rule-Based**")
         if df_rule_cmp is not None:
-            st.dataframe(df_rule_cmp, width="stretch", hide_index=True)
+            st.dataframe(df_rule_cmp, use_container_width=True, hide_index=True)
         else:
             data_unavailable("ml_rule_comparison.csv")
     with cmp2:
         st.markdown("**ML vs Statistical**")
         if df_stat_cmp is not None:
-            st.dataframe(df_stat_cmp, width="stretch", hide_index=True)
+            st.dataframe(df_stat_cmp, use_container_width=True, hide_index=True)
         else:
             data_unavailable("ml_statistical_comparison.csv")
 
@@ -1214,7 +1206,7 @@ elif page == "📁 Data Quality":
         top_issues = quality_report.get("top_failed_rules", [])
         if top_issues:
             for issue in top_issues:
-                with st.expander(f"{issue['rule_id']}: {issue['rule_name']} ({issue['severity']}) \u2014 {issue['failure_rate_pct']:.2f}% Failed"):
+                with st.expander(f"{issue['rule_id']}: {issue['rule_name']} ({issue['severity']}) — {issue['failure_rate_pct']:.2f}% Failed"):
                     st.write(f"**Description:** {issue['description']}")
                     st.write(f"**Affected Records:** {issue['affected_records']}")
                     st.write(f"**Recommended Fix:** {issue['recommended_fix']}")
@@ -1224,4 +1216,5 @@ elif page == "📁 Data Quality":
 
         st.markdown("**All Rules Table**")
         display_df = df_rules[["rule_id", "rule_name", "dimension", "severity", "status", "failure_rate_pct", "affected_records"]]
-        st.dataframe(display_df, width="stretch", hide_index=True)
+        st.dataframe(display_df, use_container_width=True, hide_index=True)
+
