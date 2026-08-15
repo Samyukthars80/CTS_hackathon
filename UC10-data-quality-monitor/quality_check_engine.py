@@ -545,8 +545,9 @@ def print_and_save_report(profile, report, output_txt_path):
 # MAIN EXECUTION
 # ---------------------------------------------------------
 def main():
-    data_path = "data/claims_pharmacy_auth_monitor_dataset_features.csv"
-    output_dir = "outputs"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(script_dir, "data", "claims_pharmacy_auth_monitor_dataset_features.csv")
+    output_dir = os.path.join(script_dir, "outputs")
     os.makedirs(output_dir, exist_ok=True)
     
     if not os.path.exists(data_path):
