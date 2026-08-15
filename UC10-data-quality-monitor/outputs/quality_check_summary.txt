@@ -1,0 +1,93 @@
+============================================================
+ UC10 DATA QUALITY MONITOR - TERMINAL REPORT 
+============================================================
+
+--- 1. PROFILING BASELINE ---
+Total Records Scanned: 10000
+Total Columns: 50
+Exact Duplicate Rows: 0
+Duplicate Record IDs: 0
+
+--- 2. QUALITY SCORES ---
+Overall Quality Score: 98.69 / 100
+Overall Risk Level: MEDIUM
+SLA Risk Level: HIGH (Breach Rate: 15.87%)
+
+Dimension Scores:
+  - Completeness: 99.48%
+  - Validity: 99.62%
+  - Uniqueness: 100.00%
+  - Consistency: 94.57%
+  - Timeliness: 100.00%
+
+--- 3. RULE EXECUTION SUMMARY ---
+RULE ID  | SEVERITY   | STATUS   | AFFECTED   | FAIL RATE  | RULE NAME
+------------------------------------------------------------------------------------------
+R001     | Critical   | PASSED   | 0          | 0.00     % | Record_ID Completeness
+R002     | Critical   | PASSED   | 0          | 0.00     % | Record_ID Uniqueness
+R003     | High       | FAILED   | 210        | 2.10     % | Beneficiary and Provider Completeness
+R004     | High       | FAILED   | 60         | 0.60     % | Provider_NPI Validity
+R005     | High       | PASSED   | 0          | 0.00     % | Record_ID Prefix Consistency
+R006     | High       | PASSED   | 0          | 0.00     % | Source System Consistency
+R007     | High       | PASSED   | 0          | 0.00     % | Medical Claim Core Fields Completeness
+R008     | High       | PASSED   | 0          | 0.00     % | Pharmacy Claim Core Fields Completeness
+R009     | High       | PASSED   | 0          | 0.00     % | Prior Auth Core Fields Completeness
+R010     | High       | FAILED   | 74         | 0.92     % | Financial Amount Non-Negative Validity
+R011     | High       | PASSED   | 0          | 0.00     % | Pharmacy Supply Validity
+R012     | High       | PASSED   | 0          | 0.00     % | Status Validity by Record Type
+R013     | Medium     | FAILED   | 100        | 1.00     % | Denial Reason Completeness
+R014     | High       | FAILED   | 101        | 1.26     % | Service Dates Consistency
+R015     | High       | FAILED   | 149        | 1.49     % | Submission vs Service Date Consistency
+R016     | Critical   | FAILED   | 2745       | 27.45    % | Processed vs Submission Date Consistency
+R017     | Critical   | FAILED   | 1492       | 18.65    % | Auth Link Consistency
+R018     | High       | PASSED   | 0          | 0.00     % | Auth Link Referential Integrity
+R019     | High       | PASSED   | 0          | 0.00     % | SLA Breach Flag Timeliness
+R020     | Medium     | FAILED   | 1          | 0.01     % | Volume Trend Consistency
+R021     | Medium     | PASSED   | 0          | 0.00     % | SLA Breach Rate Trend Consistency
+
+--- 4. TOP FAILED RULES DETAILS ---
+
+[ R016 ] Processed vs Submission Date Consistency (Critical)
+  Description      : Processed_Date must not be before Submission_Date.
+  Affected Records : 2745 (27.45%)
+  Sample IDs       : MC100442, MC103954, MC102288, MC103196, MC102065, MC104921, MC101745, MC102828, MC102200, MC101242
+  Recommended Fix  : Investigate system clock sync or ETL latency causing processed date anomalies.
+
+[ R017 ] Auth Link Consistency (Critical)
+  Description      : If Auth_Required_Flag is Y, Auth_Linked_ID must exist.
+  Affected Records : 1492 (18.65%)
+  Sample IDs       : PH202054, MC102593, PH202398, MC103830, MC104882, PH202341, PH200728, MC102420, MC104646, MC103357
+  Recommended Fix  : Ensure auth numbers are carried over into claims processing systems.
+
+[ R003 ] Beneficiary and Provider Completeness (High)
+  Description      : BENE_ID and Provider_NPI must be present for every record type.
+  Affected Records : 210 (2.10%)
+  Sample IDs       : PH200658, PA300046, MC100313, MC100958, PH201836, MC101174, PH200090, MC102670, MC102321, PH201487
+  Recommended Fix  : Ensure patient and provider contexts are fully mapped.
+
+[ R015 ] Submission vs Service Date Consistency (High)
+  Description      : Submission_Date must not be before Service_Date.
+  Affected Records : 149 (1.49%)
+  Sample IDs       : PH200728, PH201315, PA301638, MC103429, PH200088, PH202626, PH202803, PH201483, MC103674, PH201887
+  Recommended Fix  : Investigate time zone issues or data entry errors causing submissions prior to service.
+
+[ R014 ] Service Dates Consistency (High)
+  Description      : Service_End_Date must be on or after Service_Date.
+  Affected Records : 101 (1.26%)
+  Sample IDs       : MC103429, PH202626, PH202803, MC103674, PH201887, MC100437, PH200370, MC100688, MC103099, MC104375
+  Recommended Fix  : Fix date entry errors where end date precedes start date.
+
+--- 5. ANOMALY SIGNALS (HANDOFF) ---
+  Batch_ID: BATCH_20250724
+  Batch_Volume: 10000
+  Rolling_7D_Avg_Volume: 14.4300
+  Volume_Vs_Trend_Ratio: 1.1800
+  Batch_SLA_Breach_Rate: 0.1587
+  Rolling_7D_Avg_SLA_Breach_Rate: 0.3174
+  SLA_Breach_Rate_Vs_Trend_Diff: 0.0944
+  Retry_Count: 8452
+  Pipeline_Gap_Flag: 0
+  quality_score: 98.6897
+  critical_issue_count: 2
+
+============================================================

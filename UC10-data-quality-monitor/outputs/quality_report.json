@@ -1,14 +1,14 @@
 {
-    "run_timestamp": "2026-08-14T20:18:23.965722",
+    "run_timestamp": "2026-08-15T14:55:03.431583",
     "records_scanned": 10000,
     "dimension_scores": {
         "Completeness": 99.48333333333333,
-        "Validity": 74.91875,
+        "Validity": 99.61875,
         "Uniqueness": 100.0,
         "Consistency": 94.57083333333333,
         "Timeliness": 100.0
     },
-    "overall_quality_score": 92.51468750000001,
+    "overall_quality_score": 98.68968749999999,
     "overall_risk_level": "MEDIUM",
     "critical_issue_count": 2,
     "all_rule_results": [
@@ -27,7 +27,7 @@
             ],
             "message": "All records passed.",
             "description": "Record_ID must not be missing.",
-            "recommended_fix": "Investigate source system extraction logic. All records must have a primary identifier."
+            "recommended_fix": "Investigate source system extraction logic."
         },
         {
             "rule_id": "R002",
@@ -44,7 +44,7 @@
             ],
             "message": "All records passed.",
             "description": "Record_ID must be unique.",
-            "recommended_fix": "Deduplicate records based on Record_ID or check if upstream systems are sending multiple updates as new records."
+            "recommended_fix": "Deduplicate records based on Record_ID."
         },
         {
             "rule_id": "R003",
@@ -73,7 +73,7 @@
             ],
             "message": "210 records failed the rule.",
             "description": "BENE_ID and Provider_NPI must be present for every record type.",
-            "recommended_fix": "Ensure patient and provider contexts are fully mapped in the data pipeline."
+            "recommended_fix": "Ensure patient and provider contexts are fully mapped."
         },
         {
             "rule_id": "R004",
@@ -82,26 +82,26 @@
             "severity": "High",
             "status": "FAILED",
             "total_applicable_records": 10000,
-            "affected_records": 9940,
-            "failure_rate_pct": 99.4,
+            "affected_records": 60,
+            "failure_rate_pct": 0.6,
             "sample_record_ids": [
-                "PH202054",
-                "MC100442",
-                "MC103954",
-                "MC102288",
-                "MC103196",
-                "PH201178",
-                "PA300351",
-                "PH200658",
-                "MC102065",
-                "MC100413"
+                "PA300046",
+                "MC100958",
+                "MC101174",
+                "PH201487",
+                "PH200837",
+                "PA300858",
+                "PA300886",
+                "PA301281",
+                "MC102576",
+                "MC104557"
             ],
             "fields": [
                 "Provider_NPI"
             ],
-            "message": "9940 records failed the rule.",
+            "message": "60 records failed the rule.",
             "description": "Provider_NPI must contain exactly 10 digits when present.",
-            "recommended_fix": "Validate NPI format against the National Plan and Provider Enumeration System standard."
+            "recommended_fix": "Validate NPI format against the NPPES standard."
         },
         {
             "rule_id": "R005",
@@ -160,7 +160,7 @@
             ],
             "message": "All records passed.",
             "description": "MEDICAL_CLAIM requires specific dates, codes, and financial amounts.",
-            "recommended_fix": "Verify that all required medical claim fields are extracted from CARRIER_CLAIMS_SYS."
+            "recommended_fix": "Verify all required medical claim fields are extracted from CARRIER_CLAIMS_SYS."
         },
         {
             "rule_id": "R008",
@@ -186,7 +186,7 @@
             ],
             "message": "All records passed.",
             "description": "PHARMACY_CLAIM requires specific dates, drug details, and financial amounts.",
-            "recommended_fix": "Verify that all required pharmacy claim fields are extracted from PHARMACY_ADJ_SYS."
+            "recommended_fix": "Verify all required pharmacy claim fields are extracted from PHARMACY_ADJ_SYS."
         },
         {
             "rule_id": "R009",
@@ -501,34 +501,6 @@
     ],
     "top_failed_rules": [
         {
-            "rule_id": "R004",
-            "rule_name": "Provider_NPI Validity",
-            "dimension": "Validity",
-            "severity": "High",
-            "status": "FAILED",
-            "total_applicable_records": 10000,
-            "affected_records": 9940,
-            "failure_rate_pct": 99.4,
-            "sample_record_ids": [
-                "PH202054",
-                "MC100442",
-                "MC103954",
-                "MC102288",
-                "MC103196",
-                "PH201178",
-                "PA300351",
-                "PH200658",
-                "MC102065",
-                "MC100413"
-            ],
-            "fields": [
-                "Provider_NPI"
-            ],
-            "message": "9940 records failed the rule.",
-            "description": "Provider_NPI must contain exactly 10 digits when present.",
-            "recommended_fix": "Validate NPI format against the National Plan and Provider Enumeration System standard."
-        },
-        {
             "rule_id": "R016",
             "rule_name": "Processed vs Submission Date Consistency",
             "dimension": "Consistency",
@@ -613,7 +585,7 @@
             ],
             "message": "210 records failed the rule.",
             "description": "BENE_ID and Provider_NPI must be present for every record type.",
-            "recommended_fix": "Ensure patient and provider contexts are fully mapped in the data pipeline."
+            "recommended_fix": "Ensure patient and provider contexts are fully mapped."
         },
         {
             "rule_id": "R015",
@@ -643,6 +615,35 @@
             "message": "149 records failed the rule.",
             "description": "Submission_Date must not be before Service_Date.",
             "recommended_fix": "Investigate time zone issues or data entry errors causing submissions prior to service."
+        },
+        {
+            "rule_id": "R014",
+            "rule_name": "Service Dates Consistency",
+            "dimension": "Consistency",
+            "severity": "High",
+            "status": "FAILED",
+            "total_applicable_records": 8000,
+            "affected_records": 101,
+            "failure_rate_pct": 1.2625000000000002,
+            "sample_record_ids": [
+                "MC103429",
+                "PH202626",
+                "PH202803",
+                "MC103674",
+                "PH201887",
+                "MC100437",
+                "PH200370",
+                "MC100688",
+                "MC103099",
+                "MC104375"
+            ],
+            "fields": [
+                "Service_Date",
+                "Service_End_Date"
+            ],
+            "message": "101 records failed the rule.",
+            "description": "Service_End_Date must be on or after Service_Date.",
+            "recommended_fix": "Fix date entry errors where end date precedes start date."
         }
     ],
     "anomaly_signals": {
@@ -655,7 +656,9 @@
         "SLA_Breach_Rate_Vs_Trend_Diff": 0.0944,
         "Retry_Count": 8452,
         "Pipeline_Gap_Flag": 0,
-        "quality_score": 92.51468750000001,
+        "quality_score": 98.68968749999999,
         "critical_issue_count": 2
-    }
+    },
+    "batch_sla_risk_level": "HIGH",
+    "sla_breach_rate": 0.1587
 }
